@@ -230,7 +230,7 @@ async def cookies_handler(client: Client, m: Message):
 async def text_to_txt(client, message: Message):
     user_id = str(message.from_user.id)
     # Inform the user to send the text data and its desired file name
-    editable = await message.reply_text(f"<blockquote>Welcome to the Text to .txt Converter!\nSend the **text** for convert into a `.txt` file.</blockquote>")
+    editable = await message.reply_text(f"<blockquote><b>Welcome to the Text to .txt Converter!\nSend the **text** for convert into a `.txt` file.</b></blockquote>")
     input_message: Message = await bot.listen(message.chat.id)
     if not input_message.text:
         await message.reply_text("**Send valid text data**")
@@ -267,7 +267,7 @@ async def youtube_to_txt(client, message: Message):
     user_id = str(message.from_user.id)
     
     editable = await message.reply_text(
-        f"Send YouTube Website/Playlist link for convert in .txt file"
+        f"<blockquote><b>Send YouTube Website/Playlist link for convert in .txt file</b></blockquote>"
     )
 
     input_message: Message = await bot.listen(message.chat.id)
@@ -449,8 +449,17 @@ async def getcookies_handler(client: Client, m: Message):
     except Exception as e:
         await m.reply_text(f"⚠️ An error occurred: {str(e)}")
 
-@bot.on_message(filters.command(["resat"]) )
+@bot.on_message(filters.command(["reset"]) )
 async def restart_handler(_, m):
+    if m.chat.id != OWNER:
+        return
+    else:
+        await m.reply_text("𝐁𝐨𝐭 𝐢𝐬 𝐑𝐞𝐬𝐞𝐭𝐢𝐧𝐠...", True)
+        os.execl(sys.executable, sys.executable, *sys.argv)
+
+@bot.on_message(filters.command("stop") & filters.private)
+async def cancel_handler(client: Client, m: Message):
+    global processing_request, cancel_requested
     if m.chat.id not in AUTH_USERS:
         print(f"User ID not in AUTH_USERS", m.chat.id)
         await bot.send_message(
@@ -461,19 +470,13 @@ async def restart_handler(_, m):
             f"__**Your User id** __- `{m.chat.id}`</blockquote>\n\n"
         )
     else:
-        await m.reply_text("𝐁𝐨𝐭 𝐢𝐬 𝐑𝐞𝐬𝐚𝐭𝐭𝐢𝐧𝐠...", True)
-        os.execl(sys.executable, sys.executable, *sys.argv)
-
-@bot.on_message(filters.command("stop") & filters.private)
-async def cancel_handler(client: Client, m: Message):
-    global processing_request, cancel_requested
-    if processing_request:
-        cancel_requested = True
-        await m.delete()
-        cancel_message = await m.reply_text("**🚦 Process cancel request received. Stopping after current process...**")
-    else:
-        cancel_message = None
-        await m.reply_text("**⚡ No active process to cancel.**")
+        if processing_request:
+            cancel_requested = True
+            await m.delete()
+            cancel_message = await m.reply_text("**🚦 Process cancel request received. Stopping after current process...**")
+        else:
+            cancel_message = None
+            await m.reply_text("**⚡ No active process to cancel.**")
 
 @bot.on_message(filters.command("start"))
 async def start(bot, m: Message):
@@ -632,7 +635,7 @@ async def help_button(client, callback_query):
         f"➥ /users – Total User List\n"  
         f"➥ /broadcast – For Broadcasting\n"  
         f"➥ /broadusers – All Broadcasting Users\n"  
-        f"➥ /resat – Resat Bot\n"
+        f"➥ /reset – Reset Bot\n"
         f"▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰\n"  
         f"╭────────⊰◆⊱────────╮\n"   
         f" ➠ 𝐌𝐚𝐝𝐞 𝐁𝐲 : {CREDIT} 💻\n"
@@ -686,7 +689,7 @@ async def feature_button(client, callback_query):
   caption = "**✨ My Premium BOT Features :**"
   keyboard = InlineKeyboardMarkup([
       [InlineKeyboardButton("📌 Auto Pin Batch Name", callback_data="pin_command")],
-      [InlineKeyboardButton("💧 Watermark", callback_data="watermark_command"), InlineKeyboardButton("🔄 Resat", callback_data="resat_command")],
+      [InlineKeyboardButton("💧 Watermark", callback_data="watermark_command"), InlineKeyboardButton("🔄 Reset", callback_data="resat_command")],
       [InlineKeyboardButton("🖨️ Bot Working Logs", callback_data="logs_command")],
       [InlineKeyboardButton("🖋️ File Name", callback_data="custom_command"), InlineKeyboardButton("🏷️ Title", callback_data="titlle_command")],
       [InlineKeyboardButton("🎥 YouTube", callback_data="yt_command")],
@@ -726,10 +729,10 @@ async def watermark_button(client, callback_query):
   )
 
 
-@bot.on_callback_query(filters.regex("resat_command"))
+@bot.on_callback_query(filters.regex("reset_command"))
 async def restart_button(client, callback_query):
   keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back to Feature", callback_data="feat_command")]])
-  caption = f"**🔄 Resat Command:**\n\nIf You Want to Resat Your Bot, Simply Use Command /resat."
+  caption = f"**🔄 Reset Command:**\n\nIf You Want to Reset or Restart Your Bot, Simply Use Command /reset."
   await callback_query.message.edit_media(
     InputMediaPhoto(
       media="https://tinypic.host/images/2025/07/14/file_000000002d44622f856a002a219cf27aconversation_id68747543-56d8-800e-ae47-bb6438a09851message_id8e8cbfb5-ea6c-4f59-974a-43bdf87130c0.png",
@@ -812,8 +815,14 @@ async def y2t_button(client, callback_query):
          
 @bot.on_message(filters.command(["id"]))
 async def id_command(client, message: Message):
+    keyboard = InlineKeyboardMarkup([[InlineKeyboardButton(text="Send to Owner", url=f"tg://openmessage?user_id={OWNER}")]])
     chat_id = message.chat.id
-    await message.reply_text(f"<blockquote>The ID of this chat id is:</blockquote>\n`{chat_id}`")
+    text = f"<blockquote expandable><b>The ID of this chat id is:</b></blockquote>\n`{chat_id}`"
+    
+    if str(chat_id).startswith("-100"):
+        await message.reply_text(text)
+    else:
+        await message.reply_text(text, reply_markup=keyboard)
 
 @bot.on_message(filters.private & filters.command(["info"]))
 async def info(bot: Client, update: Message):
@@ -1084,7 +1093,7 @@ async def txt_handler(bot: Client, m: Message):
 
             elif "classplusapp" in url:
                 signed_api = f"https://cpapi-rjbs.onrender.com/extract_keys?url={url}@bots_updatee"
-                response = requests.get(signed_api, timeout=10)
+                response = requests.get(signed_api, timeout=20)
                 #url = response.text.strip()
                 url = response.json()['url']  
                 
@@ -1366,30 +1375,37 @@ async def text_handler(bot: Client, m: Message):
     editable = await m.reply_text(f"<pre><code>**🔹Processing your link...\n🔁Please wait...⏳**</code></pre>")
     await m.delete()
 
-    await editable.edit(f"╭━━━━❰ᴇɴᴛᴇʀ ʀᴇꜱᴏʟᴜᴛɪᴏɴ❱━━➣ \n┣━━⪼ send `144`  for 144p\n┣━━⪼ send `240`  for 240p\n┣━━⪼ send `360`  for 360p\n┣━━⪼ send `480`  for 480p\n┣━━⪼ send `720`  for 720p\n┣━━⪼ send `1080` for 1080p\n╰━━⌈⚡[`{CREDIT}`]⚡⌋━━➣ ")
-    input2: Message = await bot.listen(editable.chat.id, filters=filters.text & filters.user(m.from_user.id))
-    raw_text2 = input2.text
-    quality = f"{raw_text2}p"
-    await input2.delete(True)
-    try:
-        if raw_text2 == "144":
-            res = "256x144"
-        elif raw_text2 == "240":
-            res = "426x240"
-        elif raw_text2 == "360":
-            res = "640x360"
-        elif raw_text2 == "480":
-            res = "854x480"
-        elif raw_text2 == "720":
-            res = "1280x720"
-        elif raw_text2 == "1080":
-            res = "1920x1080" 
-        else: 
-            res = "UN"
-    except Exception:
-            res = "UN"
+    if ".pdf" in link or ".jpeg" in link or ".jpg" in link or ".png" in link:
+        await editable.delete()
+        raw_text2 = "360"
+        quality = "360p"
+        res = "640x360"
+    else:
+        await editable.edit(f"╭━━━━❰ᴇɴᴛᴇʀ ʀᴇꜱᴏʟᴜᴛɪᴏɴ❱━━➣ \n┣━━⪼ send `144`  for 144p\n┣━━⪼ send `240`  for 240p\n┣━━⪼ send `360`  for 360p\n┣━━⪼ send `480`  for 480p\n┣━━⪼ send `720`  for 720p\n┣━━⪼ send `1080` for 1080p\n╰━━⌈⚡[🦋`{CREDIT}`🦋]⚡⌋━━➣ ")
+        input2: Message = await bot.listen(editable.chat.id, filters=filters.text & filters.user(m.from_user.id))
+        raw_text2 = input2.text
+        quality = f"{raw_text2}p"
+        await input2.delete(True)
+        try:
+            if raw_text2 == "144":
+                res = "256x144"
+            elif raw_text2 == "240":
+                res = "426x240"
+            elif raw_text2 == "360":
+                res = "640x360"
+            elif raw_text2 == "480":
+                res = "854x480"
+            elif raw_text2 == "720":
+                res = "1280x720"
+            elif raw_text2 == "1080":
+                res = "1920x1080" 
+            else: 
+                res = "UN"
+        except Exception:
+                res = "UN"
           
-    await editable.delete()
+        await editable.delete()
+        
     raw_text4 = "working_token"
     thumb = "/d"
     count =0
@@ -1399,8 +1415,16 @@ async def text_handler(bot: Client, m: Message):
             Vxy = link.replace("file/d/","uc?export=download&id=").replace("www.youtube-nocookie.com/embed", "youtu.be").replace("?modestbranding=1", "").replace("/view?usp=sharing","")
             url = Vxy
 
-            name1 = links.replace("(", "[").replace(")", "]").replace("_", "").replace("\t", "").replace(":", "").replace("/", "").replace("+", "").replace("#", "").replace("|", "").replace("@", "").replace("*", "").replace(".", "").replace("https", "").replace("http", "").strip()
-            name = f'{name1[:60]}'
+            if "youtu" in url:
+                oembed_url = f"https://www.youtube.com/oembed?url={url}&format=json"
+                response = requests.get(oembed_url)
+                audio_title = response.json().get('title', 'YouTube Video')
+                audio_title = audio_title.replace("_", " ")
+                name = f'{audio_title[:60]}'        
+                name1 = f'{audio_title}'
+            else:
+                name1 = links.replace("(", "[").replace(")", "]").replace("_", " ").replace("\t", "").replace(":", " ").replace("/", " ").replace("+", " ").replace("#", " ").replace("|", " ").replace("@", " ").replace("*", " ").replace(".", " ").replace("https", "").replace("http", "").strip()
+                name = f'{name1[:60]}'
             
             if "visionias" in url:
                 async with ClientSession() as session:
@@ -1413,16 +1437,22 @@ async def text_handler(bot: Client, m: Message):
 
             elif "https://cpvod.testbook.com/" in url:
                 url = url.replace("https://cpvod.testbook.com/","https://media-cdn.classplusapp.com/drm/")
-                url = 'https://dragoapi.vercel.app/classplus?link=' + url
+                url = f"https://cpapi-rjbs.onrender.com/extract_keys?url={url}@bots_updatee"
                 mpd, keys = helper.get_mps_and_keys(url)
                 url = mpd
                 keys_string = " ".join([f"--key {key}" for key in keys])
 
             elif "classplusapp.com/drm/" in url:
-                url = 'https://dragoapi.vercel.app/classplus?link=' + url
+                url = f"https://cpapi-rjbs.onrender.com/extract_keys?url={url}@bots_updatee"
                 mpd, keys = helper.get_mps_and_keys(url)
                 url = mpd
                 keys_string = " ".join([f"--key {key}" for key in keys])
+
+            elif "classplusapp" in url:
+                signed_api = f"https://cpapi-rjbs.onrender.com/extract_keys?url={url}@bots_updatee"
+                response = requests.get(signed_api, timeout=20)
+                #url = response.text.strip()
+                url = response.json()['url']  
 
             elif "tencdn.classplusapp" in url:
                 headers = {'host': 'api.classplusapp.com', 'x-access-token': f'{raw_text4}', 'accept-language': 'EN', 'api-version': '18', 'app-version': '1.4.73.2', 'build-number': '35', 'connection': 'Keep-Alive', 'content-type': 'application/json', 'device-details': 'Xiaomi_Redmi 7_SDK-32', 'device-id': 'c28d3cb16bbdac01', 'region': 'IN', 'user-agent': 'Mobile-Android', 'webengage-luid': '00000187-6fe4-5d41-a530-26186858be4c', 'accept-encoding': 'gzip'}
@@ -1470,8 +1500,8 @@ async def text_handler(bot: Client, m: Message):
                 cmd = f'yt-dlp -f "{ytf}" "{url}" -o "{name}.mp4"'
 
             try:
-                cc = f'🎞️𝐓𝐢𝐭𝐥𝐞 » `{name} [{res}].mp4`\n🔗𝐋𝐢𝐧𝐤 » <a href="{link}">__**CLICK HERE**__</a>\n\n🌟𝐄𝐱𝐭𝐫𝐚𝐜𝐭𝐞𝐝 𝐁𝐲 » `{CREDIT}`'
-                cc1 = f'📕𝐓𝐢𝐭𝐥𝐞 » `{name}`\n🔗𝐋𝐢𝐧𝐤 » <a href="{link}">__**CLICK HERE**__</a>\n\n🌟𝐄𝐱𝐭𝐫𝐚𝐜𝐭𝐞𝐝 𝐁𝐲 » `{CREDIT}`'
+                cc = f'🎞️ `{name} [{res}].mp4`\n<blockquote expandable>🔗𝐋𝐢𝐧𝐤 » {link}</blockquote>\n🌟𝐄𝐱𝐭𝐫𝐚𝐜𝐭𝐞𝐝 𝐁𝐲 » {CREDIT}'
+                cc1 = f'📕 `{name}`\n<blockquote expandable>🔗𝐋𝐢𝐧𝐤 » [Click Here to Open]({link})</blockquote>\n\n🌟𝐄𝐱𝐭𝐫𝐚𝐜𝐭𝐞𝐝 𝐁𝐲 » {CREDIT}'
                   
                 if "drive" in url:
                     try:
@@ -1565,7 +1595,7 @@ async def text_handler(bot: Client, m: Message):
                                 
                 elif 'encrypted.m' in url:    
                     Show = f"**⚡Dᴏᴡɴʟᴏᴀᴅɪɴɢ Sᴛᴀʀᴛᴇᴅ...⏳**\n" \
-                           f"🔗𝐋𝐢𝐧𝐤 » {url}\n" \
+                           f"<blockquote expandable>🔗𝐋𝐢𝐧𝐤 » {url}</blockquote>\n" \
                            f"✦𝐁𝐨𝐭 𝐌𝐚𝐝𝐞 𝐁𝐲 ✦ {CREDIT}"
                     prog = await m.reply_text(Show, disable_web_page_preview=True)
                     res_file = await helper.download_and_decrypt_video(url, cmd, name, appxkey)  
@@ -1577,7 +1607,7 @@ async def text_handler(bot: Client, m: Message):
 
                 elif 'drmcdni' in url or 'drm/wv' in url:
                     Show = f"**⚡Dᴏᴡɴʟᴏᴀᴅɪɴɢ Sᴛᴀʀᴛᴇᴅ...⏳**\n" \
-                           f"🔗𝐋𝐢𝐧𝐤 » {url}\n" \
+                           f"<blockquote expandable>🔗𝐋𝐢𝐧𝐤 » {url}</blockquote>\n" \
                            f"✦𝐁𝐨𝐭 𝐌𝐚𝐝𝐞 𝐁𝐲 ✦ {CREDIT}"
                     prog = await m.reply_text(Show, disable_web_page_preview=True)
                     res_file = await helper.decrypt_and_merge_video(mpd, keys_string, path, name, raw_text2)
@@ -1589,7 +1619,7 @@ async def text_handler(bot: Client, m: Message):
      
                 else:
                     Show = f"**⚡Dᴏᴡɴʟᴏᴀᴅɪɴɢ Sᴛᴀʀᴛᴇᴅ...⏳**\n" \
-                           f"🔗𝐋𝐢𝐧𝐤 » {url}\n" \
+                           f"<blockquote expandable>🔗𝐋𝐢𝐧𝐤 » {url}</blockquote>\n" \
                            f"✦𝐁𝐨𝐭 𝐌𝐚𝐝𝐞 𝐁𝐲 ✦ {CREDIT}"
                     prog = await m.reply_text(Show, disable_web_page_preview=True)
                     res_file = await helper.download_video(url, cmd, name)
@@ -1599,7 +1629,7 @@ async def text_handler(bot: Client, m: Message):
                     time.sleep(1)
 
             except Exception as e:
-                    await m.reply_text(f"⚠️𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝𝐢𝐧𝐠 𝐈𝐧𝐭𝐞𝐫𝐮𝐩𝐭𝐞𝐝\n\n🔗𝐋𝐢𝐧𝐤 » `{link}`\n\n<blockquote><b><i>⚠️Failed Reason »**__\n{str(e)}</i></b></blockquote>")
+                    await m.reply_text(f"⚠️𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝𝐢𝐧𝐠 𝐈𝐧𝐭𝐞𝐫𝐮𝐩𝐭𝐞𝐝\n\n🔗𝐋𝐢𝐧𝐤 » `{link}`\n\n<blockquote><b><i>⚠️Failed Reason »\n{str(e)}</i></b></blockquote>")
                     pass
 
     except Exception as e:
@@ -1610,7 +1640,7 @@ def notify_owner():
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     data = {
         "chat_id": OWNER,
-        "text": "𝐁𝐨𝐭 𝐑𝐞𝐬𝐚𝐭 𝐒𝐮𝐜𝐜𝐞𝐬𝐬𝐟𝐮𝐥𝐥𝐲 ✅"
+        "text": "𝐁𝐨𝐭 𝐑𝐞𝐬𝐭𝐚𝐫𝐭𝐞𝐝 𝐒𝐮𝐜𝐜𝐞𝐬𝐬𝐟𝐮𝐥𝐥𝐲 ✅"
     }
     requests.post(url, data=data)
 
@@ -1625,13 +1655,12 @@ def reset_and_set_commands():
         {"command": "stop", "description": "🚫 Stop the ongoing process"},
         {"command": "broadcast", "description": "📢 Broadcast to All Users"},
         {"command": "broadusers", "description": "👨‍❤️‍👨 All Broadcasting Users"},
-        {"command": "help", "description": "👨‍🏭 Help about the Bot"},
         {"command": "drm", "description": "📑 Upload .txt file"},
         {"command": "cookies", "description": "📁 Upload YT Cookies"},
         {"command": "y2t", "description": "🔪 YouTube → .txt Converter"},
         {"command": "ytm", "description": "🎶 YouTube → .mp3 downloader"},
         {"command": "t2t", "description": "📟 Text → .txt Generator"},
-        {"command": "resat", "description": "✅ Resat the Bot"},
+        {"command": "reset", "description": "✅ Reset the Bot"},
         {"command": "id", "description": "🆔 Get Your ID"},
         {"command": "info", "description": "ℹ️ Check Your Information"},
         {"command": "logs", "description": "👁️ View Bot Activity"},
