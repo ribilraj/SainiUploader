@@ -99,8 +99,8 @@ async def progress_bar(current, total, reply, start): #NIKHIL SAINI BOTS
 
             progress_bar = completed_symbol * completed_length + remaining_symbol * remaining_length #NIKHIL SAINI BOTS
 
-            try: #NIKHIL SAINI BOTS
-                #await reply.edit(f'`╭──⌯═════𝐔𝐩𝐥𝐨𝐚𝐝𝐢𝐧𝐠══════⌯──╮\n├⚡ {progress_bar}\n├⚙️ Progress ➤ | {perc} |\n├🚀 Speed ➤ | {sp} |\n├📟 Processed ➤ | {cur} |\n├🧲 Size ➤ | {tot} |\n├🕑 ETA ➤ | {eta} |\n╰─═══✨🦋𝙎𝘼𝙄𝙉𝙄 𝘽𝙊𝙏𝙎🦋✨═══─╯`') 
-                await reply.edit(f'<blockquote>`╭──⌯═════𝐁𝐨𝐭 𝐒𝐭𝐚𝐭𝐢𝐜𝐬══════⌯──╮\n├⚡ {progress_bar}\n├⚙️ Progress ➤ | {perc} |\n├🚀 Speed ➤ | {sp} |\n├📟 Processed ➤ | {cur} |\n├🧲 Size ➤ | {tot} |\n├🕑 ETA ➤ | {eta} |\n╰─═══✨🦋{CREDIT}🦋✨═══─╯`</blockquote>') 
-            except FloodWait as e: #NIKHIL SAINI BOTS
-                time.sleep(e.x) #NIKHIL SAINI BOTS 
+            try:
+                 await reply.edit(f'`╔════❰ᴘʀᴏɢʀᴇss ʙᴀʀ❱══════⊱ \n║╭━━━━━━━━━━━━━━━➣\n║┣ ⚡[{progress_bar}] : {perc}\n║┣ 🚀 sᴘᴇᴇᴅ : {sp} \n║┣ 📟 ᴘʀᴏᴄᴇssᴇᴅ : {cur}\n║┣ 💾 sɪᴢᴇ- ᴇᴛᴀ : {tot}:{eta} \n║╰━━━━━━━━━━━━━━━➣\n╚═⌈ 𝘽𝙤𝙩 𝙈𝙖𝙙𝙚 𝙗𝙮 ❝𝐂𝐡𝐚𝐦𝐛𝐚𝐥 𝐇𝐢𝐭𝐥𝐞𝐫𝐬 ❥❥═══ ❤️:)™~⌋─━━➣⚡⌋`') 
+                 #await reply.edit(f'`╭━━━━❰ᴘʀᴏɢʀᴇss ʙᴀʀ❱━➣ \n┣⪼ ⚡{progress_bar} : {perc}\n┣⪼ 🚀 sᴘᴇᴇᴅ : {sp} \n┣⪼ 📟 ᴘʀᴏᴄᴇssᴇᴅ : {cur}\n┣⪼ 💾 sɪᴢᴇ- ᴇᴛᴀ :  {tot} : {eta} \n╰━⌈  𝘽𝙤𝙩 𝙈𝙖𝙙𝙚 𝙗𝙮 ❝𝐂𝐡𝐚𝐦𝐛𝐚𝐥 𝐇𝐢𝐭𝐥𝐞𝐫𝐬 ❥❥═══ ❤️:)™~⌋─━━➣`\n') 
+            except FloodWait as e:
+                time.sleep(e.x)
