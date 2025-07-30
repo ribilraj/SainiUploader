@@ -13,6 +13,8 @@ import urllib.parse
 import yt_dlp
 import tgcrypto
 import cloudscraper
+from datetime import datetime
+from zoneinfo import ZoneInfo
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
 from base64 import b64encode, b64decode
@@ -63,10 +65,10 @@ photozip = 'https://envs.sh/cD_.jpg'
 
 
 # Inline keyboard for start command
-BUTTONSCONTACT = InlineKeyboardMarkup([[InlineKeyboardButton(text="📞 Contact", url="https://t.me/saini_contact_bot")]])
+BUTTONSCONTACT = InlineKeyboardMarkup([[InlineKeyboardButton(text="📞 Contact", url="https://t.me/Final_piece")]])
 keyboard = InlineKeyboardMarkup(
     [
-        [InlineKeyboardButton(text="🛠️ Help", url="https://t.me/+3k-1zcJxINYwNGZl"), InlineKeyboardButton(text="🛠️ Repo", url="https://github.com/nikhilsainiop/saini-txt-direct")],
+        [InlineKeyboardButton(text="🛠️ Help", url="https://t.me/+3k-1zcJxINYwNGZl"), InlineKeyboardButton(text="🛠️ Repo", url="https://t.me/Final_piece")],
     ]
 )
 
@@ -526,7 +528,7 @@ async def start(bot, m: Message):
         keyboard = InlineKeyboardMarkup([
             [InlineKeyboardButton("💎 Features", callback_data="feat_command"), InlineKeyboardButton("🕸️ Commands", callback_data="cmd_command")],
             [InlineKeyboardButton("💳 Plans", callback_data="upgrade_command")],
-            [InlineKeyboardButton(text="📞 Contact", url=f"tg://openmessage?user_id={OWNER}"), InlineKeyboardButton(text="🛠️ Repo", url="https://github.com/nikhilsainiop/saini-txt-direct")],
+            [InlineKeyboardButton(text="📞 Contact", url=f"tg://openmessage?user_id={OWNER}"), InlineKeyboardButton(text="🛠️ Repo", url="https://t.me/Final_piece")],
         ])
         
         await start_message.edit_text(
@@ -540,7 +542,7 @@ async def start(bot, m: Message):
         keyboard = InlineKeyboardMarkup([
             [InlineKeyboardButton("💎 Features", callback_data="feat_command"), InlineKeyboardButton("✨ Commands", callback_data="cmd_command")],
             [InlineKeyboardButton("💳 Plans", callback_data="upgrade_command")],
-            [InlineKeyboardButton(text="📞 Contact", url=f"tg://openmessage?user_id={OWNER}"), InlineKeyboardButton(text="🛠️ Repo", url="https://github.com/nikhilsainiop/saini-txt-direct")],
+            [InlineKeyboardButton(text="📞 Contact", url=f"tg://openmessage?user_id={OWNER}"), InlineKeyboardButton(text="🛠️ Repo", url="https://t.me/Final_piece")],
         ])
         await start_message.edit_text(
            f" 🎉 Welcome {m.from_user.first_name} to DRM Bot! 🎉\n\n"
@@ -555,7 +557,7 @@ async def back_to_main_menu(client, callback_query):
     keyboard = InlineKeyboardMarkup([
             [InlineKeyboardButton("💎 Features", callback_data="feat_command"), InlineKeyboardButton("✨ Commands", callback_data="cmd_command")],
             [InlineKeyboardButton("💳 Plans", callback_data="upgrade_command")],
-            [InlineKeyboardButton(text="📞 Contact", url=f"tg://openmessage?user_id={OWNER}"), InlineKeyboardButton(text="🛠️ Repo", url="https://github.com/nikhilsainiop/saini-txt-direct")],
+            [InlineKeyboardButton(text="📞 Contact", url=f"tg://openmessage?user_id={OWNER}"), InlineKeyboardButton(text="🛠️ Repo", url="https://Final_piece")],
         ])
     
     await callback_query.message.edit_media(
@@ -672,7 +674,7 @@ async def upgrade_button(client, callback_query):
            f"• 🎓 Utkarsh Protection(Video + PDF)\n"
            f"• 🎓 All Non DRM+AES Encrypted URLs\n"
            f"• 🎓 MPD URLs if the key is known (e.g., Mpd_url?key=key XX:XX)</blockquote>\n\n"
-           f"<b>💵 Monthly Plan: 100 INR</b>\n\n"
+           f"<b>💵 Monthly Plan: 800 INR</b>\n\n"
            f"If you want to buy membership of the bot, feel free to contact [{CREDIT}](tg://user?id={OWNER})\n"
     )  
     
@@ -1088,14 +1090,14 @@ async def txt_handler(bot: Client, m: Message):
 
             elif "https://cpvod.testbook.com/" in url or "classplusapp.com/drm/" in url:
                 url = url.replace("https://cpvod.testbook.com/","https://media-cdn.classplusapp.com/drm/")
-                url = f"https://cpapi-rjbs.onrender.com/extract_keys?url={url}@bots_updatee&user_id={1003575883}"
+                url = f"https://cpapi-rjbs.onrender.com/extract_keys?url={url}@bots_updatee&user_id={7290128282}"
                 #url = f"https://scammer-keys.vercel.app/api?url={url}&token={cptoken}&auth=@scammer_botxz1"
                 mpd, keys = helper.get_mps_and_keys(url)
                 url = mpd
                 keys_string = " ".join([f"--key {key}" for key in keys])
 
             elif "classplusapp" in url:
-                signed_api = f"https://cpapi-rjbs.onrender.com/extract_keys?url={url}@bots_updatee&user_id={1003575883}"
+                signed_api = f"https://cpapi-rjbs.onrender.com/extract_keys?url={url}@bots_updatee&user_id={7290128282}"
                 response = requests.get(signed_api, timeout=20)
                 #url = response.text.strip()
                 url = response.json()['url']  
@@ -1169,8 +1171,9 @@ async def txt_handler(bot: Client, m: Message):
                     ccyt = f'[🎥]Vid Id : {str(count).zfill(3)}\n**Video Title :** `{v_name} .mp4`\n<a href="{url}">__**Click Here to Watch Stream**__</a>\n<blockquote><b>Batch Name : {b_name}\nTopic Name : {t_name}</b></blockquote>\n\n**Extracted by➤**{CR}\n'
                     ccm = f'[🎵]Mp3 Id : {str(count).zfill(3)}\n**Audio Title :** `{v_name} .mp3`\n<blockquote><b>Batch Name : {b_name}\nTopic Name : {t_name}</b></blockquote>\n\n**Extracted by➤**{CR}\n'
                 else:
-                    cc = f'[🎥]Vid Id : {str(count).zfill(3)}\n**Video Title :** `{name1} [{res}p] .mkv`\n<blockquote><b>Batch Name :</b> {b_name}</blockquote>\n\n**Extracted by➤**{CR}\n'
-                    cc1 = f'[📕]Pdf Id : {str(count).zfill(3)}\n**File Title :** `{name1} .pdf`\n<blockquote><b>Batch Name :</b> {b_name}</blockquote>\n\n**Extracted by➤**{CR}\n'
+                    timestamp = datetime.now(ZoneInfo("Asia/Kolkata")).strftime("%d %B %Y • %I:%M %p")
+                    cc = f'📘 <b>VIDEO DETAILS<b> 📘\n━━━━━━━━━━━━━━━━━━━━━━━\n📌 Document ID: #{str(count).zfill(3)}\n\n📝 <b>Title:<b> {name1}\n━━━━━━━━━━━━━━━━━━━━━━━\n📦 Batch Name:</b>\n<blockquote>{b_name}</blockquote>\n━━━━━━━━━━━━━━━━━━━━━━━\n🛠️ <b>Uploader:</b> {CR}\n━━━━━━━━━━━━━━━━━━━━━━━\n🕒 {timestamp}'
+                    cc1 = f'📘 <b>PDF DETAILS</b> 📘\n━━━━━━━━━━━━━━━━━━━━━━━\n📌 <b>PDF ID:</b> #{str(count).zfill(3)}\n\n📝 <b>Title:</b> {name1}.pdf\n━━━━━━━━━━━━━━━━━━━━━━━\n📦 <b>Batch Name:</b>\n<blockquote>{b_name}</blockquote>\n━━━━━━━━━━━━━━━━━━━━━━━\n🛠️ <b>Uploader:</b> {CR}\n━━━━━━━━━━━━━━━━━━━━━━━\n🕒 {timestamp}'
                     cczip = f'[📁]Zip Id : {str(count).zfill(3)}\n**Zip Title :** `{name1} .zip`\n<blockquote><b>Batch Name :</b> {b_name}</blockquote>\n\n**Extracted by➤**{CR}\n' 
                     ccimg = f'[🖼️]Img Id : {str(count).zfill(3)}\n**Img Title :** `{name1} .jpg`\n<blockquote><b>Batch Name :</b> {b_name}</blockquote>\n\n**Extracted by➤**{CR}\n'
                     ccm = f'[🎵]Audio Id : {str(count).zfill(3)}\n**Audio Title :** `{name1} .mp3`\n<blockquote><b>Batch Name :</b> {b_name}</blockquote>\n\n**Extracted by➤**{CR}\n'
@@ -1460,19 +1463,19 @@ async def text_handler(bot: Client, m: Message):
 
             elif "https://cpvod.testbook.com/" in url:
                 url = url.replace("https://cpvod.testbook.com/","https://media-cdn.classplusapp.com/drm/")
-                url = f"https://cpapi-rjbs.onrender.com/extract_keys?url={url}@bots_updatee&user_id={1003575883}"
+                url = f"https://cpapi-rjbs.onrender.com/extract_keys?url={url}@bots_updatee&user_id={7290128282}"
                 mpd, keys = helper.get_mps_and_keys(url)
                 url = mpd
                 keys_string = " ".join([f"--key {key}" for key in keys])
 
             elif "classplusapp.com/drm/" in url:
-                url = f"https://cpapi-rjbs.onrender.com/extract_keys?url={url}@bots_updatee&user_id={1003575883}"
+                url = f"https://cpapi-rjbs.onrender.com/extract_keys?url={url}@bots_updatee&user_id={7290128282}"
                 mpd, keys = helper.get_mps_and_keys(url)
                 url = mpd
                 keys_string = " ".join([f"--key {key}" for key in keys])
 
             elif "classplusapp" in url:
-                signed_api = f"https://cpapi-rjbs.onrender.com/extract_keys?url={url}@bots_updatee&user_id={1003575883}"
+                signed_api = f"https://cpapi-rjbs.onrender.com/extract_keys?url={url}@bots_updatee&user_id={7290128282}"
                 response = requests.get(signed_api, timeout=20)
                 #url = response.text.strip()
                 url = response.json()['url']  
